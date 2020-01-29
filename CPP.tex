@@ -1,0 +1,129 @@
+\documentclass[10pt]{exam}
+\printanswers
+\usepackage{dirtree}
+\usepackage{epsfig,amssymb}
+\usepackage{xcolor}
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\usepackage{hyperref}
+\usepackage{fullpage}
+\usepackage{tikz}
+\pagestyle{empty}
+\usepackage{listings}
+\setlength{\parindent}{0pt} %
+\setlength{\parskip}{.25cm}
+\newcommand{\comment}[1]{}
+\boxedpoints
+\addpoints
+\usepackage{amsmath}
+\usepackage{algorithm2e}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{graphics}
+\usepackage{listings}
+\pagestyle{headandfoot}
+\firstpageheader{\Large UNL-UAV}{{\Large C++ Assignement}}{\Large Spring 2020}
+\begin{document}
+Before we begin we need to set up our workspace structure. Make sure you have premake5 installed.
+
+Find decent directory to start your workspace in. I recommend starting a folder in \lstinline{~/git/} for all your git projects. Then when making a workspace just start a new folder in \lstinline{~/git/}. Make a new folder call \lstinline{cpp-tutorial}. Then make your file structure like the following:
+
+\dirtree{%
+	.1 cpp-tutorial.
+	.2 include.
+	.2 src.
+	.2 premake5.lua.
+}
+
+In the premake5.lua file copy and paste the following:
+
+\begin{lstlisting}[language={[5.0]lua},basicstyle=\ttfamily\footnotesize,keywordstyle=\bfseries]
+outputdir = "%{cfg.buildcfg}/%{cfg.system}-%{cfg.architecture}"
+workspace "CPP-Tutorial"
+	startproject "Source"
+	location "workspace"
+	architecture "x64"
+
+	configurations{
+		"Debug",
+		"Release",
+		"Dist"
+	}
+
+	filter "configurations:Dist"
+		postbuildcommands{
+			"{COPY} bin/"..outputdir.."/* builds"
+		}
+
+	filter "system:windows"
+		defines "_WINDOWS"
+
+	filter "system:linux"
+		defines "_LINUX" 
+
+	filter "system:macosx"
+		defines "_OSX"
+
+	filter "configurations:Debug"
+		defines "_DEBUG"
+		symbols "On"
+	filter "configurations:Dist"
+		defines "_DIST"
+		optimize "On"
+	filter "configurations:Release"
+		defines "_RELEASE"
+		optimize "On"
+project "Source"
+	cppdialect "C++17"
+	location "workspace/source"
+	kind "ConsoleApp"
+	language "C++"
+
+	targetdir ("bin/" .. outputdir)
+	objdir ("bin-int/" .. outputdir)
+
+	files{
+		"src/**.h",
+		"src/**.hpp",
+		"src/**.c",
+		"src/**.cpp"
+	}
+	includedirs{
+		"src",
+		"include"
+	}
+\end{lstlisting}
+
+Save the file the execute the following command in the root of the workspace.
+
+\begin{lstlisting}
+$ premake5 gmake2
+\end{lstlisting}
+
+Now you should see a workspace folder, here you is where you can compile your code using the following command. Your executable will be in \lstinline{bin/}.
+\begin{lstlisting}
+$ make
+\end{lstlisting}
+
+\begin{questions}
+\question Make UAV::Test::Address with standard postal fields with getter and setters.
+\question Make a UAV::Test::Banking::Bank object that have the following fields and the propper getters.
+\begin{itemize}
+\item std::string name;
+\item Address address;
+\item std::vector[SafetyDepositBox] boxes;
+\end{itemize}
+
+\question Make a UAV::Test::Banking::SafteyDepositBox object with the following methods and fields:
+\begin{itemize}
+\item int boxNumber;
+\item UAV::Test::Person person;
+\end{itemize}
+
+\question Make a UAV::Test::Person object that have the following fields:
+\begin{itemize}
+\item std::string name;
+\item int age;
+\end{itemize}
+\end{questions}
+\end{document}
