@@ -109,12 +109,14 @@ $ make
 
 \textbf{Notice:} For all objects make a \lstinline{.h} file in the include directory and make a corresponding \lstinline{.cpp}
 \begin{questions}
-\question Make UAV::Test::Address with standard postal fields with getter and setters.
+\question Make UAV::Test::Printable with a pure virtual method called printable;
+\question Make UAV::Test::Address that implments UAV::Test::Printable with standard postal fields with getter and setters.
 \question Make a UAV::Test::Banking::Bank object that have the following fields and the propper getters.
 \begin{itemize}
 \item std::string name;
 \item Address address;
 \item std::vector[SafetyDepositBox] boxes;
+\item destructor
 \end{itemize}
 
 \question Make a UAV::Test::Banking::SafteyDepositBox object with the following methods and fields:
@@ -123,7 +125,7 @@ $ make
 \item UAV::Test::Person person;
 \end{itemize}
 
-\question Make a UAV::Test::Person object that have the following fields:
+\question Make a UAV::Test::Person object that implements UAV::Test::Printable and have the following fields:
 \begin{itemize}
 \item std::string name;
 \item int age;
