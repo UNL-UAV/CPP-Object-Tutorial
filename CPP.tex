@@ -24,86 +24,79 @@
 \pagestyle{headandfoot}
 \firstpageheader{\Large UNL-UAV}{{\Large C++ Assignement}}{\Large Spring 2020}
 \begin{document}
+{\LARGE Explaination}
+
+Before we get to our activity today we are go though unit testing.
+
+Unit testing is a level of software testing where individual units/ components of a software are tested. 
+
+What we can do with unit testing we can make sure a features is working and outputting the correct information, instead of going into gdb or make printf statements everywhere.
+
+{\Large How do we use Unit Testing}
+
+We are going to be using a libarary called catch2. Which provides an all in one header implmentation of unit testing.
+
+\newpage
+{\LARGE Activity}
+
 Before we begin we need to set up our workspace structure. Make sure you have premake5 installed.
 
 Find decent directory to start your workspace in. I recommend starting a folder in \lstinline{~/git/} for all your git projects. Then when making a workspace just start a new folder in \lstinline{~/git/}. Make a new folder call \lstinline{cpp-tutorial}. Then make your file structure like the following:
 
 \dirtree{%
-	.1 cpp-tutorial.
-	.2 include.
-	.2 src.
+	.1 cpp-tutorial/.
+	.2 include/.
+	.2 src/.
+	.2 test/.
 	.2 premake5.lua.
 }
 
-In the premake5.lua file copy and paste the following:
+Execute the following command:
 
-\begin{lstlisting}[language={[5.0]lua},basicstyle=\ttfamily\footnotesize,keywordstyle=\bfseries]
-outputdir = "%{cfg.buildcfg}/%{cfg.system}-%{cfg.architecture}"
-workspace "CPP-Tutorial"
-	startproject "Source"
-	location "workspace"
-	architecture "x64"
-
-	configurations{
-		"Debug",
-		"Release",
-		"Dist"
-	}
-
-	filter "configurations:Dist"
-		postbuildcommands{
-			"{COPY} bin/"..outputdir.."/* builds"
-		}
-
-	filter "system:windows"
-		defines "_WINDOWS"
-
-	filter "system:linux"
-		defines "_LINUX" 
-
-	filter "system:macosx"
-		defines "_OSX"
-
-	filter "configurations:Debug"
-		defines "_DEBUG"
-		symbols "On"
-	filter "configurations:Dist"
-		defines "_DIST"
-		optimize "On"
-	filter "configurations:Release"
-		defines "_RELEASE"
-		optimize "On"
-project "Source"
-	cppdialect "C++17"
-	location "workspace/source"
-	kind "ConsoleApp"
-	language "C++"
-
-	targetdir ("bin/" .. outputdir)
-	objdir ("bin-int/" .. outputdir)
-
-	files{
-		"src/**.h",
-		"src/**.hpp",
-		"src/**.c",
-		"src/**.cpp"
-	}
-	includedirs{
-		"src",
-		"include"
-	}
+\begin{lstlisting}
+$ git submodule add https://github.com/catchorg/Catch2 vendor/catch2
 \end{lstlisting}
+What this do is pull in a clone of Catch2 as a dependancy. Think of this as a Git repo that links back to the orignal in our Git repo.
+
+In the premake5.lua file copy and paste the code from the following website: https://git.root3287.site/snippets/2
+
+We want to edit a few components.
+\begin{enumerate}
+\item Add the following under line 3
+\begin{lstlisting}
+includeDir["catch2"] = "vendor/catch2/single_include"
+\end{lstlisting}
+\item Copy Line 38-56 and paste it under line 56.
+\item Change the string on the newly created project to "Test"
+\item On the newly created project change the location varible to "workspace/test"
+\item On the newly created project change all the src/ to test/
+\end{enumerate}
 
 Save the file the execute the following command in the root of the workspace.
 
+If you have Gmake installed:
 \begin{lstlisting}
 $ premake5 gmake2
 \end{lstlisting}
 
+If you have visual studio installed:
+\begin{lstlisting}
+$ premake5 vs2019
+\end{lstlisting}
+
+If you have xcode installed:
+\begin{lstlisting}
+$ premake5 xcode4
+\end{lstlisting}
+
 Now you should see a workspace folder, here you is where you can compile your code using the following command. Your executable will be in \lstinline{bin/}.
+Gmake:
 \begin{lstlisting}
 $ make
 \end{lstlisting}
+
+Other:
+Open up the file with your file explorer.
 
 \newpage
 
@@ -122,6 +115,7 @@ $ make
 \question Make a UAV::Test::Banking::SafteyDepositBox object with the following methods and fields:
 \begin{itemize}
 \item int boxNumber;
+\item float money;
 \item UAV::Test::Person person;
 \end{itemize}
 
@@ -130,5 +124,12 @@ $ make
 \item std::string name;
 \item int age;
 \end{itemize}
+
+\question Make a test.cpp in the \lstinline{test/} folder. define CATCH CONFIG MAIN, and include catch2 main header. \textbf{Note}: You can just use standard assert
+
+\question Create a test case for address using Catch2.
+\question Create a test case for person using Catch2.
+\question Create a test case for Safty deposit box using Catch2;
 \end{questions}
 \end{document}
+
